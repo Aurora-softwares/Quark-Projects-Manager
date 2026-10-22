@@ -1,0 +1,226 @@
+﻿Title,Body,Status,Priority,Size,Target Version,Group,Milestone,Repository,Type,Acceptance Criteria,Depends On
+Extract document state and file operations from main.rs,"Create testable document model with no GUI dependency
+
+Acceptance criteria: Open/save/dirty/close state has deterministic unit tests; UI behavior unchanged",Backlog,P0,M,v0.3.1,Architecture,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Open/save/dirty/close state has deterministic unit tests; UI behavior unchanged,
+Extract workspace and file discovery modules,"Isolate folder management, file walking and quick-open indexing
+
+Acceptance criteria: Workspace traversal works across multiple roots, excludes generated dirs and avoids cycles",Backlog,P1,M,v0.3.1,Architecture,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,"Workspace traversal works across multiple roots, excludes generated dirs and avoids cycles",
+Extract settings persistence module,"Introduce injected config path and explicit serialization errors
+
+Acceptance criteria: Settings can be round-tripped and corrupt settings handled without overwriting user data",Backlog,P1,M,v0.3.1,Architecture,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Settings can be round-tripped and corrupt settings handled without overwriting user data,
+Extract build command planning module,"Separate compiler invocation selection and args from GUI
+
+Acceptance criteria: SDK and native Hydrogen commands independently tested",Backlog,P1,M,v0.3.1,Architecture,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,SDK and native Hydrogen commands independently tested,
+Extract Git service module,"Separate Git process arguments and repository root discovery
+
+Acceptance criteria: Git runs only in intended repo and failures surface clearly",Backlog,P1,M,v0.3.1,Architecture,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Git runs only in intended repo and failures surface clearly,
+Document lifecycle tests,"Test new/open/reopen/save/save-all/close/dirty state
+
+Acceptance criteria: Test normal, error and edge cases including unsaved changes",Backlog,P0,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,"Test normal, error and edge cases including unsaved changes",
+Prevent unsaved data loss,"Protect edited tabs on close, app exit and workspace switching
+
+Acceptance criteria: Unsaved text cannot be silently discarded; cancel/save/discard paths tested",Backlog,P0,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Unsaved text cannot be silently discarded; cancel/save/discard paths tested,
+Atomic file saving and save failure tests,"Protect files from partial writes and surface filesystem failures
+
+Acceptance criteria: Write-failure leaves original contents unchanged; failure message displayed",Backlog,P0,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Write-failure leaves original contents unchanged; failure message displayed,
+Text encoding and line ending tests,"Cover UTF-8, Unicode, BOM, CRLF and trailing newline
+
+Acceptance criteria: Round-trip preserves specified encodings and newline behaviour",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Round-trip preserves specified encodings and newline behaviour,
+Word-wrap and scrolling regression tests,"Test toggle persistence and X/Y overflow behavior
+
+Acceptance criteria: Long lines scroll horizontally unwrapped and vertically always; wrap restores layout",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Long lines scroll horizontally unwrapped and vertically always; wrap restores layout,
+Large-file and responsiveness tests,"Use representative large Hydrogen files and memory/time budgets
+
+Acceptance criteria: Opening and editing do not freeze indefinitely; documented performance baseline",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Opening and editing do not freeze indefinitely; documented performance baseline,
+Tab navigation and shortcut tests,"Test create/switch/close tabs and configured shortcuts
+
+Acceptance criteria: Active document correct after every action; shortcuts map to intended commands",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Active document correct after every action; shortcuts map to intended commands,
+Quick-open and file explorer tests,"Test multiple roots, filtering, duplicates and symlink loops
+
+Acceptance criteria: Matches correct files, omits ignored dirs, never loops and handles missing roots",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,"Matches correct files, omits ignored dirs, never loops and handles missing roots",
+Hydrogen lexer and completion edge tests,"Cover Unicode, multiline comments, escapes, number tokens and completion duplicates
+
+Acceptance criteria: Tokenizer reconstructs original text; completion is deterministic and prefix-correct",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Tokenizer reconstructs original text; completion is deterministic and prefix-correct,
+Hydrogen project graph integration fixtures,"Add Australis-like fixtures with external references and nested manifests
+
+Acceptance criteria: Root manifest discovers all intended files without infinite recursion",Backlog,P0,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Root manifest discovers all intended files without infinite recursion,
+Malformed and unsafe project path tests,"Test missing sources, unreadable paths, broken references and loops
+
+Acceptance criteria: Warnings are actionable, no panic and no unintended filesystem mutation",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,"Warnings are actionable, no panic and no unintended filesystem mutation",
+Build command integration tests,"Use fake compiler executables to capture arguments and working directories
+
+Acceptance criteria: Each Hydrogen verb and target invokes correct command with correct path",Backlog,P0,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Each Hydrogen verb and target invokes correct command with correct path,
+Command streaming and process failure tests,"Check stdout/stderr, exit status, startup failures and long outputs
+
+Acceptance criteria: Logs arrive during execution; failure surfaced; output never silently truncated",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Logs arrive during execution; failure surfaced; output never silently truncated,
+Local Git workflow tests,"Use temporary repositories to exercise status/diff/fetch/pull/push/clone
+
+Acceptance criteria: Local Git scenarios pass without remote network dependency",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Local Git scenarios pass without remote network dependency,
+Settings persistence and migration tests,"Test defaults, corruption, restart, paths and new fields
+
+Acceptance criteria: Settings survive reload and old files remain compatible",Backlog,P1,S,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Settings survive reload and old files remain compatible,
+Automated GUI smoke test harness,"Add repeatable native UI smoke tests for menus, tabs, editing and dialogs
+
+Acceptance criteria: GUI can be launched and driven in CI or documented dedicated runners",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,GUI can be launched and driven in CI or documented dedicated runners,
+GUI visual and input regression cases,"Exercise window resize, menu visibility, scroll, wrap and font display
+
+Acceptance criteria: No clipped controls or unintended changes at tested screen sizes",Backlog,P1,M,v0.3.1,Testing & QA,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,No clipped controls or unintended changes at tested screen sizes,
+Make formatting check non-mutating in CI,"Replace cargo fmt --all with cargo fmt --all -- --check
+
+Acceptance criteria: Unformatted code fails CI without auto-modification",Backlog,P0,S,v0.3.1,Release Engineering,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Unformatted code fails CI without auto-modification,
+Gate merges and releases on all tests,"Require fmt, clippy, tests and release build on Linux/Windows/macOS
+
+Acceptance criteria: Any failing required check prevents promotion to release",Backlog,P0,M,v0.3.1,Release Engineering,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Any failing required check prevents promotion to release,
+Introduce coverage reports and thresholds,"Add cargo-llvm-cov; measure library/core coverage
+
+Acceptance criteria: Published coverage report and initial target >=80% testable core line coverage",Backlog,P1,S,v0.3.1,Release Engineering,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Published coverage report and initial target >=80% testable core line coverage,
+Use release candidates and signed checksums,"Produce versioned artifacts and SHA-256 manifests after verification
+
+Acceptance criteria: Published binaries are traceable to source commit and checksum verified",Backlog,P1,M,v0.3.1,Release Engineering,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,Published binaries are traceable to source commit and checksum verified,
+Document manual GUI acceptance matrix,"Define manual checks and machine/platform ownership
+
+Acceptance criteria: Checklist records tested OS, architecture and result before release",Backlog,P1,S,v0.3.1,Release Engineering,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,"Checklist records tested OS, architecture and result before release",
+Correct README feature and limit statements,"Sync docs with v0.3.x highlighting, completion and streamed output
+
+Acceptance criteria: No obsolete claims; setup instructions work on supported platforms",Backlog,P1,S,v0.3.1,Release Engineering,Reliability and release gates,Aurora-softwares/Quark-IDE,Task,No obsolete claims; setup instructions work on supported platforms,
+Implement cursor-aware completion insertion,"Replace placeholder append-to-end with token replacement at caret
+
+Acceptance criteria: Suggestion inserts at cursor with correct selection, undo and Unicode handling",Backlog,P0,L,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,"Suggestion inserts at cursor with correct selection, undo and Unicode handling",
+Find and replace within file,"Add next/previous, case and whole-word controls
+
+Acceptance criteria: Matches navigable, replacements undoable, no loss of text",Backlog,P1,M,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,"Matches navigable, replacements undoable, no loss of text",
+Undo/redo and standard editor operations,"Validate multiline edits, selection, clipboard and redo
+
+Acceptance criteria: Undo/redo history correct across edits and document switches",Backlog,P1,M,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,Undo/redo history correct across edits and document switches,
+Line numbers and go-to-line navigation,"Show line gutter and navigate to requested line
+
+Acceptance criteria: Gutter aligns with wrapped/unwrapped text and large files",Backlog,P1,M,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,Gutter aligns with wrapped/unwrapped text and large files,
+Incremental large-file layout and virtualization,"Avoid full-buffer re-layout per frame for huge source files
+
+Acceptance criteria: Performance budget measured on representative Australis files",Backlog,P1,L,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,Performance budget measured on representative Australis files,
+Per-file editor preferences,"Support indentation, tabs/spaces, wrap and line endings
+
+Acceptance criteria: Preferences persist and are honored when reopening files",Backlog,P1,M,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,Preferences persist and are honored when reopening files,
+Split editor view and tab groups,"Allow two files or two views of one file
+
+Acceptance criteria: Independent scroll positions and safe shared edit model",Backlog,P2,M,v0.4.0,Editor,Core editor and usability,Aurora-softwares/Quark-IDE,Feature,Independent scroll positions and safe shared edit model,
+Core editor interaction regression suite,"Exercise caret, undo, search, scrolling and large inputs
+
+Acceptance criteria: Automated edge tests plus GUI checks pass on supported platforms",Backlog,P1,M,v0.4.0,Testing & QA,Core editor and usability,Aurora-softwares/Quark-IDE,Task,Automated edge tests plus GUI checks pass on supported platforms,
+Implement native LSP JSON-RPC client,"Connect to configured Hydrogen SDK language server
+
+Acceptance criteria: Initialize/shutdown, document sync, cancellation and errors tested",Backlog,P0,L,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,"Initialize/shutdown, document sync, cancellation and errors tested",
+Display compiler/LSP diagnostics in editor,"Mark errors and warnings with line/column and messages
+
+Acceptance criteria: Diagnostics update on edit/save and do not show stale versions",Backlog,P0,L,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,Diagnostics update on edit/save and do not show stale versions,
+LSP symbol completion and signature help,"Prefer semantic suggestions with local fallback
+
+Acceptance criteria: Case-sensitive symbols distinguished; completion inserted correctly",Backlog,P1,L,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,Case-sensitive symbols distinguished; completion inserted correctly,
+Go to definition and references,"Navigate symbols within project and external referenced projects
+
+Acceptance criteria: Navigation opens correct paths, including external .hyproj references",Backlog,P1,L,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,"Navigation opens correct paths, including external .hyproj references",
+Hover documentation and symbol outline,"Display symbol metadata and document symbol tree
+
+Acceptance criteria: Results accurate and do not block editor",Backlog,P1,M,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,Results accurate and do not block editor,
+Format document and selection,"Invoke hy fmt or supported LSP formatting
+
+Acceptance criteria: Preview/safe edit application and undo supported",Backlog,P1,M,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,Preview/safe edit application and undo supported,
+Recover on language server restart,"Handle crash/restart, reconnect and unsaved buffers
+
+Acceptance criteria: Editor remains operational and diagnostics recover",Backlog,P1,M,v0.5.0,Language Intelligence,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Feature,Editor remains operational and diagnostics recover,
+Mock LSP integration and contract tests,"Use deterministic fake server for malformed/out-of-order messages
+
+Acceptance criteria: Protocol state, timeouts and stale-response handling tested",Backlog,P0,L,v0.5.0,Testing & QA,Hydrogen language intelligence,Aurora-softwares/Quark-IDE,Task,"Protocol state, timeouts and stale-response handling tested",
+Implement Unix PTY terminal sessions,"Add portable interactive terminal for Linux/macOS
+
+Acceptance criteria: Shell prompt, stdin, resize, signals and ANSI programs behave correctly",Backlog,P0,L,v0.6.0,Terminal,Native terminal and tasks,Aurora-softwares/Quark-IDE,Feature,"Shell prompt, stdin, resize, signals and ANSI programs behave correctly",
+Implement Windows ConPTY terminal sessions,"Support real interactive shells on Windows
+
+Acceptance criteria: PowerShell/cmd input, resize and output validated",Backlog,P0,L,v0.6.0,Terminal,Native terminal and tasks,Aurora-softwares/Quark-IDE,Feature,"PowerShell/cmd input, resize and output validated",
+Render ANSI colours and terminal scrollback,"Introduce terminal emulator state and bounded history
+
+Acceptance criteria: ANSI, Unicode, cursor movement and long output tested",Backlog,P1,L,v0.6.0,Terminal,Native terminal and tasks,Aurora-softwares/Quark-IDE,Feature,"ANSI, Unicode, cursor movement and long output tested",
+Multiple terminal tabs and process lifecycle,"Spawn, switch and terminate distinct sessions
+
+Acceptance criteria: Closing tab cleans up child process without leaks",Backlog,P1,M,v0.6.0,Terminal,Native terminal and tasks,Aurora-softwares/Quark-IDE,Feature,Closing tab cleans up child process without leaks,
+Build task and working-directory selection,"Choose project root and task profile independently of active file
+
+Acceptance criteria: Target compiler, args and cwd correct for nested projects",Backlog,P1,M,v0.6.0,Terminal,Native terminal and tasks,Aurora-softwares/Quark-IDE,Feature,"Target compiler, args and cwd correct for nested projects",
+Problem matcher and clickable output paths,"Parse Hydrogen diagnostics from build output
+
+Acceptance criteria: Click diagnostic opens matching file and position",Backlog,P1,M,v0.6.0,Terminal,Native terminal and tasks,Aurora-softwares/Quark-IDE,Feature,Click diagnostic opens matching file and position,
+Terminal cross-platform interaction tests,"Test stdin, resize, ctrl-c, command failure and scrollback
+
+Acceptance criteria: Real PTY/ConPTY exercised on each platform",Backlog,P0,L,v0.6.0,Testing & QA,Native terminal and tasks,Aurora-softwares/Quark-IDE,Task,Real PTY/ConPTY exercised on each platform,
+First-class multi-root workspaces,"Save/open named workspace with independent folder roots
+
+Acceptance criteria: Roots persist, remove safely and support duplicate project names",Backlog,P0,L,v0.7.0,Workspace,Workspace and build system,Aurora-softwares/Quark-IDE,Feature,"Roots persist, remove safely and support duplicate project names",
+Hydrogen build graph and project selection,"Represent root, subprojects and build configurations
+
+Acceptance criteria: Australis-like OS projects compile from correct manifest and cwd",Backlog,P0,L,v0.7.0,Workspace,Workspace and build system,Aurora-softwares/Quark-IDE,Feature,Australis-like OS projects compile from correct manifest and cwd,
+Workspace-wide symbol and text search,"Search indexed source across referenced projects
+
+Acceptance criteria: Results across external references ranked and navigable",Backlog,P1,M,v0.7.0,Workspace,Workspace and build system,Aurora-softwares/Quark-IDE,Feature,Results across external references ranked and navigable,
+Filesystem watching and external modifications,"Detect file changes without losing unsaved text
+
+Acceptance criteria: Conflict prompts and refresh behavior tested",Backlog,P1,M,v0.7.0,Workspace,Workspace and build system,Aurora-softwares/Quark-IDE,Feature,Conflict prompts and refresh behavior tested,
+Scoped ignore and file indexing rules,"Honor ignore patterns and cap traversal costs
+
+Acceptance criteria: No symlink loops; generated artifacts excluded reliably",Backlog,P1,M,v0.7.0,Workspace,Workspace and build system,Aurora-softwares/Quark-IDE,Feature,No symlink loops; generated artifacts excluded reliably,
+Compiler profiles and targets,"Configure SDK/native Hydrogen and platform output
+
+Acceptance criteria: Target-specific commands validated across OSes",Backlog,P1,M,v0.7.0,Workspace,Workspace and build system,Aurora-softwares/Quark-IDE,Feature,Target-specific commands validated across OSes,
+Real Hydrogen and Australis fixture builds,"Exercise reproducible fixtures plus optional real repositories
+
+Acceptance criteria: Reference resolution and build plan verified end to end",Backlog,P0,L,v0.7.0,Testing & QA,Workspace and build system,Aurora-softwares/Quark-IDE,Task,Reference resolution and build plan verified end to end,
+Repository status view and change list,"Show modified, added and untracked files by repo root
+
+Acceptance criteria: Status matches git CLI in nested/multi-root repos",Backlog,P1,M,v0.8.0,Source Control,Git and GitHub workflows,Aurora-softwares/Quark-IDE,Feature,Status matches git CLI in nested/multi-root repos,
+"Stage, unstage, commit and diff UI","Offer safe explicit Git actions
+
+Acceptance criteria: Staged content and commit hashes match expected operations",Backlog,P1,M,v0.8.0,Source Control,Git and GitHub workflows,Aurora-softwares/Quark-IDE,Feature,Staged content and commit hashes match expected operations,
+Branch switch and merge conflict display,"Switch branches with unsaved-change safety
+
+Acceptance criteria: No inadvertent loss of local edits and conflict markers visible",Backlog,P1,M,v0.8.0,Source Control,Git and GitHub workflows,Aurora-softwares/Quark-IDE,Feature,No inadvertent loss of local edits and conflict markers visible,
+GitHub authentication and repository actions,"Use system Git credential helper or opt-in gh CLI
+
+Acceptance criteria: No tokens logged or persisted in plaintext",Backlog,P1,M,v0.8.0,Source Control,Git and GitHub workflows,Aurora-softwares/Quark-IDE,Feature,No tokens logged or persisted in plaintext,
+GitHub issues and pull-request links,"Open linked remote items through browser/gh
+
+Acceptance criteria: Correct repo detection and graceful offline failure",Backlog,P2,M,v0.8.0,Source Control,Git and GitHub workflows,Aurora-softwares/Quark-IDE,Feature,Correct repo detection and graceful offline failure,
+Git integration security and regression tests,"Verify argument boundaries, odd file names, auth errors
+
+Acceptance criteria: No shell injection, secrets redacted, local remote tests pass",Backlog,P0,M,v0.8.0,Testing & QA,Git and GitHub workflows,Aurora-softwares/Quark-IDE,Task,"No shell injection, secrets redacted, local remote tests pass",
+Define versioned Rust extension API,"Design commands, panels, file types and language providers
+
+Acceptance criteria: API versioning and compatibility tests included",Backlog,P1,L,v0.9.0,Extensibility,Extensibility and stability,Aurora-softwares/Quark-IDE,Feature,API versioning and compatibility tests included,
+Isolate extensions and permissions,"Avoid untrusted in-process execution by default
+
+Acceptance criteria: Permissions explicit and crashing extension cannot corrupt editor",Backlog,P1,L,v0.9.0,Extensibility,Extensibility and stability,Aurora-softwares/Quark-IDE,Feature,Permissions explicit and crashing extension cannot corrupt editor,
+Custom themes and keyboard mapping,"Load user themes and keymap config
+
+Acceptance criteria: Invalid config safely falls back, no shortcut collisions",Backlog,P2,M,v0.9.0,Extensibility,Extensibility and stability,Aurora-softwares/Quark-IDE,Feature,"Invalid config safely falls back, no shortcut collisions",
+Profile startup and background indexing,"Measure cold start, RAM and large workspace loading
+
+Acceptance criteria: Documented performance budgets and regression alerts",Backlog,P1,M,v0.9.0,Performance,Extensibility and stability,Aurora-softwares/Quark-IDE,Feature,Documented performance budgets and regression alerts,
+Harden file and process boundaries,"Audit path traversal, save safety and command execution
+
+Acceptance criteria: Adversarial test cases pass and no arbitrary shell interpolation",Backlog,P0,M,v0.9.0,Security,Extensibility and stability,Aurora-softwares/Quark-IDE,Feature,Adversarial test cases pass and no arbitrary shell interpolation,
+"Stress, soak and crash recovery tests","Run long edit sessions, open/close cycles and simulated crashes
+
+Acceptance criteria: No progressive memory leaks, state restored when supported",Backlog,P1,M,v0.9.0,Testing & QA,Extensibility and stability,Aurora-softwares/Quark-IDE,Task,"No progressive memory leaks, state restored when supported",
+Run complete cross-platform release qualification,"Run all required checks on supported Windows/macOS/Linux hosts
+
+Acceptance criteria: Unit, integration, GUI, PTY and LSP checks green",Backlog,P0,L,v1.0.0,Release Engineering,Stable native release,Aurora-softwares/Quark-IDE,Task,"Unit, integration, GUI, PTY and LSP checks green",
+Publish reproducible release artifacts,"Produce platform binaries, hashes and changelog
+
+Acceptance criteria: Version, commit and SHA256 are traceable",Backlog,P0,M,v1.0.0,Release Engineering,Stable native release,Aurora-softwares/Quark-IDE,Task,"Version, commit and SHA256 are traceable",
+Validate clean installs and upgrade path,"Test new install and migration from earlier Quark settings
+
+Acceptance criteria: No data loss, OS packaging launches and uninstalls correctly",Backlog,P1,M,v1.0.0,Release Engineering,Stable native release,Aurora-softwares/Quark-IDE,Task,"No data loss, OS packaging launches and uninstalls correctly",
+Write user guide and contributing docs,"Document Hydrogen workflows, keys, Git, build and troubleshooting
+
+Acceptance criteria: New contributor can build and test on each supported OS",Backlog,P1,M,v1.0.0,Release Engineering,Stable native release,Aurora-softwares/Quark-IDE,Task,New contributor can build and test on each supported OS,
+Final Hydrogen/Australis acceptance suite,"Test editing single .hy through recursive OS project references
+
+Acceptance criteria: Documented end-to-end acceptance passes without manual workarounds",Backlog,P0,M,v1.0.0,Testing & QA,Stable native release,Aurora-softwares/Quark-IDE,Task,Documented end-to-end acceptance passes without manual workarounds,
