@@ -24,8 +24,8 @@ jobs:
             name: macOS-Intel
           - os: windows-2022
             name: Windows
-    # Linux builds use Cerberus; forked PRs and other operating systems stay hosted.
-    runs-on: ${{ fromJSON(matrix.os == 'ubuntu-24.04' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && '["self-hosted","Linux","X64"]' || format('["{0}"]', matrix.os)) }}
+    # Trusted Linux and Windows jobs use self-hosted runners; fork PRs and macOS stay hosted.
+    runs-on: ${{ fromJSON(matrix.os == 'ubuntu-24.04' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && '["self-hosted","Linux","X64"]' || matrix.os == 'windows-2022' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && '["self-hosted","Windows","X64"]' || format('["{0}"]', matrix.os)) }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -58,9 +58,19 @@ jobs:
           mkdir -p dist
           bash packaging/macos-app.sh
           mv dist/QuarkProjects-macOS.dmg "dist/QuarkProjects-${{ matrix.name }}.dmg"
-      - name: Install NSIS
+      - name: Ensure NSIS is available
         if: runner.os == 'Windows'
-        run: choco install nsis --no-progress -y
+        shell: pwsh
+        run: |
+          $nsis = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          if (!(Test-Path $nsis)) {
+            if ("${{ runner.environment }}" -eq 'github-hosted') {
+              choco install nsis --no-progress -y
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            } else {
+              throw 'NSIS missing on self-hosted Windows runner; install NSIS on Hydra before rerunning CI.'
+            }
+          }
       - name: Package Windows installer
         if: runner.os == 'Windows'
         shell: pwsh
