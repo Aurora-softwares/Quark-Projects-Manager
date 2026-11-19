@@ -24,13 +24,47 @@ jobs:
             name: macOS-Intel
           - os: windows-2022
             name: Windows
-    # Linux builds use Cerberus; forked PRs and other operating systems stay hosted.
-    runs-on: ${{ fromJSON(matrix.os == 'ubuntu-24.04' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && '["self-hosted","Linux","X64"]' || format('["{0}"]', matrix.os)) }}
+    # Trusted Linux and Windows jobs use self-hosted runners; fork PRs and macOS stay hosted.
+    runs-on: ${{ fromJSON(matrix.os == 'ubuntu-24.04' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && '["self-hosted","Linux","X64"]' || matrix.os == 'windows-2022' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && '["self-hosted","Windows","X64"]' || format('["{0}"]', matrix.os)) }}
+    env:
+      PSExecutionPolicyPreference: ${{ startsWith(matrix.os, 'windows-') && 'Bypass' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+        if: runner.os != 'Windows' || runner.environment != 'self-hosted'
         with:
           components: rustfmt, clippy
+      - name: Set up native Windows Rust
+        if: runner.os == 'Windows' && runner.environment == 'self-hosted'
+        shell: powershell -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File {0}
+        run: |
+          $toolchain = 'stable-x86_64-pc-windows-msvc'
+          $rustup = Get-Command rustup.exe -ErrorAction SilentlyContinue
+          if (-not $rustup) {
+            $path = Join-Path $env:USERPROFILE '.cargo\bin\rustup.exe'
+            if (Test-Path -LiteralPath $path) { $rustup = Get-Item -LiteralPath $path }
+          }
+          if ($rustup) {
+            $rustupPath = $rustup.Source
+            if (-not $rustupPath) { $rustupPath = $rustup.FullName }
+            $cargoBin = Split-Path -Parent $rustupPath
+          } else {
+            $env:CARGO_HOME = Join-Path $env:RUNNER_TEMP "cargo-$env:GITHUB_RUN_ID-$env:GITHUB_JOB"
+            $env:RUSTUP_HOME = Join-Path $env:CARGO_HOME 'rustup'
+            $installer = Join-Path $env:CARGO_HOME 'rustup-init.exe'
+            New-Item -ItemType Directory -Force -Path $env:CARGO_HOME | Out-Null
+            Invoke-WebRequest -UseBasicParsing -Uri 'https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe' -OutFile $installer
+            & $installer -y --no-modify-path --default-host x86_64-pc-windows-msvc --default-toolchain none
+            if ($LASTEXITCODE -ne 0) { throw "rustup-init failed ($LASTEXITCODE)" }
+            "CARGO_HOME=$env:CARGO_HOME" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            "RUSTUP_HOME=$env:RUSTUP_HOME" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            $cargoBin = Join-Path $env:CARGO_HOME 'bin'
+            $rustupPath = Join-Path $cargoBin 'rustup.exe'
+          }
+          & $rustupPath toolchain install $toolchain --profile minimal --no-self-update --component rustfmt --component clippy
+          if ($LASTEXITCODE -ne 0) { throw "Rust toolchain setup failed ($LASTEXITCODE)" }
+          "RUSTUP_TOOLCHAIN=$toolchain" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $cargoBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - uses: Swatinem/rust-cache@v2
       - name: Linux prerequisites
         if: runner.os == 'Linux'
@@ -58,12 +92,22 @@ jobs:
           mkdir -p dist
           bash packaging/macos-app.sh
           mv dist/QuarkProjects-macOS.dmg "dist/QuarkProjects-${{ matrix.name }}.dmg"
-      - name: Install NSIS
+      - name: Ensure NSIS is available
         if: runner.os == 'Windows'
-        run: choco install nsis --no-progress -y
+        shell: powershell -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File {0}
+        run: |
+          $nsis = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          if (!(Test-Path $nsis)) {
+            if ("${{ runner.environment }}" -eq 'github-hosted') {
+              choco install nsis --no-progress -y
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            } else {
+              throw 'NSIS missing on self-hosted Windows runner; install NSIS on Hydra before rerunning CI.'
+            }
+          }
       - name: Package Windows installer
         if: runner.os == 'Windows'
-        shell: pwsh
+        shell: powershell -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File {0}
         run: |
           New-Item -ItemType Directory -Path dist -Force | Out-Null
           & "C:\Program Files (x86)\NSIS\makensis.exe" packaging/windows.nsi
